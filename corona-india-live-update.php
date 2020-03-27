@@ -7,8 +7,7 @@ Version: 1.0.2
 Author: Tj Thouhid 
 Author URI: https://tjthouhid.me/
 License: GPLv2 or later 
-
-    */
+*/
    
 
 
@@ -94,6 +93,7 @@ function corona_ilu_install_data() {
 			//'migrated_info' => '0' 
 		) 
 	);
+	update_corona_ilu_info();
 }
 
 register_activation_hook( __FILE__, 'corona_ilu_install_data' );
