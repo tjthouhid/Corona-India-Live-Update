@@ -9,18 +9,15 @@ You can then use Shortcode to See the live update on your website.
 ```
 [corona-ilu-info name='confirmed_case'] 
 ```
-** This is for showing Active COVID 2019 cases **
+**This is for showing Active COVID 2019 cases**
 
 You can use dffrent name attribute value for diffrent values.
 Plugin Menu Have All values Given.
 
 ## EXTRAS
 
-For checking and changing corn time from 30 minute to a diffrent values you can use ** WP Crontrol ** plugin
+For checking and changing corn time from 30 minute to a diffrent values you can use [WP Crontrol](https://wordpress.org/plugins/wp-crontrol/) plugin
 
-```
-https://wordpress.org/plugins/wp-crontrol/
-```
 
 ## How to Install
 
