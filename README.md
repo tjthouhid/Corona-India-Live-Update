@@ -1,10 +1,11 @@
 # Corona India Live Update
 
-This Plugin get live data from https://www.mohfw.gov.in/ and update to your wordpress Database in every 30min.
+This Plugin get live data from https://www.mohfw.gov.in/ and update to your wordpress Database in every 30 minute.
 
 You can then use Shortcode to See the live update on your website.
 
 ## Here how you can use it : 
+
 ```
 [corona-ilu-info name='confirmed_case'] 
 ```
@@ -12,6 +13,14 @@ You can then use Shortcode to See the live update on your website.
 
 You can use dffrent name attribute value for diffrent values.
 Plugin Menu Have All values Given.
+
+## EXTRAS
+
+For checking and changing corn time from 30 minute to a diffrent values you can use ** WP Crontrol ** plugin
+
+```
+https://wordpress.org/plugins/wp-crontrol/
+```
 
 ## How to Install
 

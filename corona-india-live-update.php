@@ -145,7 +145,7 @@ function corona_ilu_info_shortcode( $atts ) {
    global $wpdb;
    $name = $a['name'];
    //update_corona_ilu_info();
-$table_name = $wpdb->prefix . 'corona_ilu_info';
+   $table_name = $wpdb->prefix . 'corona_ilu_info';
    $post_data = $wpdb->get_results("SELECT $name FROM $table_name WHERE last_data = '101'");
   // echo "<pre>";
   // print_r($post_data[0]->$name);
@@ -174,6 +174,9 @@ function corona_ilu_menu() {
 }
 
 function corona_ilu_template(){
+	global $wpdb;
+	$table_name = $wpdb->prefix . 'corona_ilu_info';
+	$post_data = $wpdb->get_results("SELECT * FROM $table_name WHERE last_data = '101'");
 	?>
 	<style type="text/css">
 		.result-clb{margin-top: 60px;}
@@ -182,6 +185,7 @@ function corona_ilu_template(){
 		.result-clb table{background-color: #fff;width: 400px;}
 		.result-clb table td{padding: 10px;}
 		.attr-rs{color: #da1324;font-weight: bold;}
+		.clvalue{font-size: 20px;font-weight: 700;text-align: center;color: #ffffff;background: #2eb734;}
 	</style>
 	<h1>Corona India Live Update</h1>
 	<div class="result-clb">
@@ -196,26 +200,32 @@ function corona_ilu_template(){
 			<tr>
 				<th>RESULT</th>
 				<th>attribute</th>
+				<th>Value</th>
 			</tr>
 			<tr>
 				<td>Passengers screened at airport</td>
 				<td class="attr-rs">passengers_screened_at_airport</td>
+				<td class="clvalue"><?php echo $post_data[0]->passengers_screened_at_airport;?></td>
 			</tr>
 			<tr>
-				<td>CONFIRMED CASES</td>
+				<td>Active COVID 2019 case</td>
 				<td class="attr-rs">confirmed_case</td>
+				<td class="clvalue"><?php echo $post_data[0]->confirmed_case;?></td>
 			</tr>
 			<tr>
-				<td>RECOVERED CASES</td>
+				<td>Cured/discharged cases</td>
 				<td class="attr-rs">recovered_case</td>
+				<td class="clvalue"><?php echo $post_data[0]->recovered_case;?></td>
 			</tr>
 			<tr>
-				<td>DEATHS</td>
+				<td>Death cases</td>
 				<td class="attr-rs">death</td>
+				<td class="clvalue"><?php echo $post_data[0]->death;?></td>
 			</tr>
 			<tr>
-				<td>Migrated</td>
+				<td>Migrated COVID-19 Patient</td>
 				<td class="attr-rs">migrated</td>
+				<td class="clvalue"><?php echo $post_data[0]->migrated;?></td>
 			</tr>
 		</table>
 	</div>
