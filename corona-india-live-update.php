@@ -38,7 +38,7 @@ function corona_ilu_install() {
 
 	add_option( 'jal_db_version', $jal_db_version );
 
-	wp_schedule_event( time(), '30min', 'cli_my_hourly_event' );
+	wp_schedule_event( time(), '15min', 'update_corona_ilu_event' );
 }
 register_activation_hook( __FILE__, 'corona_ilu_install' );
 
@@ -48,7 +48,7 @@ function cli_my_cron_schedules($schedules){
             'interval' => 5*60,
             'display' => __('Once every 5 minutes'));
     }
-    if(!isset($schedules["30min"])){
+    if(!isset($schedules["15min"])){
         $schedules["15min"] = array(
             'interval' => 15*60,
             'display' => __('Once every 15 minutes'));
@@ -63,7 +63,7 @@ function my_deactivation() {
     $table_name = $wpdb->prefix . 'corona_ilu_info';
     $sql = "DROP TABLE IF EXISTS $table_name";
     $wpdb->query($sql);
-    wp_clear_scheduled_hook( 'cli_my_hourly_event' );
+    wp_clear_scheduled_hook( 'update_corona_ilu_event' );
 }
 function corona_ilu_install_data() {
 	global $wpdb;
@@ -109,7 +109,7 @@ function update_corona_ilu_info() {
 	$wpdb->update($table_name, $data, array('last_data'=>'101'));
 }
 
-add_action( 'cli_my_hourly_event', 'update_corona_ilu_info' );
+add_action( 'update_corona_ilu_event', 'update_corona_ilu_info' );
 
 
 
