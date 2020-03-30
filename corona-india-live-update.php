@@ -2,8 +2,8 @@
 /* 
 Plugin Name: Corona India Live Update
 Plugin URI: https://github.com/tjthouhid/Corona-India-Live-Update/
-Description: This Plugin get live data from https://www.mohfw.gov.in/ and update. 
-Version: 1.0.2 
+Description: This Plugin get live data from https://www.covid19india.org/ and update. 
+Version: 1.0.3 
 Author: Tj Thouhid 
 Author URI: https://tjthouhid.me/
 License: GPLv2 or later 
@@ -26,17 +26,10 @@ function corona_ilu_install() {
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		last_data int(100) NOT NULL,
 		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		passengers_screened_at_airport varchar(100) DEFAULT '' NOT NULL,
-		#passengers_screened_at_airport_info text NOT NULL,
+		active varchar(100) DEFAULT '' NOT NULL,
 		confirmed_case varchar(100) DEFAULT '' NOT NULL,
-		#confirmed_case_info text NOT NULL,
 		recovered_case varchar(100) DEFAULT '' NOT NULL,
-		#recovered_case_info text NOT NULL,
 		death varchar(100) DEFAULT '' NOT NULL,
-		#death_info text NOT NULL,
-		migrated varchar(100) DEFAULT '' NOT NULL,
-		total_case varchar(100) DEFAULT '' NOT NULL,
-		#migrated_info text NOT NULL,
 		PRIMARY KEY  (id)
 	) $charset_collate;";
 
@@ -82,17 +75,10 @@ function corona_ilu_install_data() {
 		array( 
 			'time' => current_time( 'mysql' ), 
 			'last_data' => '101', 
-			'passengers_screened_at_airport' => '0', 
-			//'passengers_screened_at_airport_info' => '0', 
+			'active' => '0', 
 			'confirmed_case' => '0', 
-			//'confirmed_case_info' => '0', 
 			'recovered_case' => '0', 
-			//'recovered_case_info' => '0', 
-			'death' => '0', 
-			//'death_info' => '0'  
-			'migrated' => '0', 
-			'total_case' => '0', 
-			//'migrated_info' => '0' 
+			'death' => '0',
 		) 
 	);
 	update_corona_ilu_info();
@@ -106,29 +92,20 @@ function update_corona_ilu_info() {
 	$table_name = $wpdb->prefix . 'corona_ilu_info';
 
 
-	$url="https://www.mohfw.gov.in/";  
+	$url="https://api.covid19india.org/data.json";  
 	$original_file = file_get_contents("$url");
+	$obj = json_decode($original_file);
 
-	//preg_match_all( "@<h2 class=\"case\">(.*)</h2>@siU", $original_file, $case );
-	//preg_match_all( "@<span class=\"info\">(.*)</span>@siU", $original_file, $case_info );	
 
-	preg_match_all( "@<span class=\"icount\">(.*)</span>@siU", $original_file, $case );
-	preg_match_all( "@<div class=\"info_label\">(.*)</div>@siU", $original_file, $case_info );
+	//preg_match_all( "@<span class=\"icount\">(.*)</span>@siU", $original_file, $case );
+	//preg_match_all( "@<div class=\"info_label\">(.*)</div>@siU", $original_file, $case_info );
 	$data = array(
 		'time' => current_time( 'mysql' ),
-		'passengers_screened_at_airport' => $case[1][0], 
-		//'passengers_screened_at_airport_info' => '0',  
-		'confirmed_case' => $case[1][1], 
-		//'confirmed_case_info' => $case_info[1][0], 
-		'recovered_case' => $case[1][2], 
-		//'recovered_case_info' => $case_info[1][3], 
-		'death' => $case[1][3], 
-		'migrated' => $case[1][4], 
-		//'death_info' => $case_info[1][4],
-		'total_case' => ($case[1][1]+$case[1][2]+$case[1][3]+$case[1][4]), 
-		//'migrated_info' => '0',
+		'active' => $obj->statewise[0]->active, 
+		'confirmed_case' => $obj->statewise[0]->confirmed,
+		'recovered_case' => $obj->statewise[0]->recovered,
+		'death' => $obj->statewise[0]->deaths,
 	);
-
 	$wpdb->update($table_name, $data, array('last_data'=>'101'));
 }
 
@@ -204,17 +181,17 @@ function corona_ilu_template(){
 				<th>Value</th>
 			</tr>
 			<tr>
-				<td>Passengers screened at airport</td>
-				<td class="attr-rs">passengers_screened_at_airport</td>
-				<td class="clvalue"><?php echo $post_data[0]->passengers_screened_at_airport;?></td>
+				<td>Active Case</td>
+				<td class="attr-rs">active</td>
+				<td class="clvalue"><?php echo $post_data[0]->active;?></td>
 			</tr>
 			<tr>
-				<td>Active COVID 2019 case</td>
+				<td>Confirmed Case</td>
 				<td class="attr-rs">confirmed_case</td>
 				<td class="clvalue"><?php echo $post_data[0]->confirmed_case;?></td>
 			</tr>
 			<tr>
-				<td>Cured/discharged cases</td>
+				<td>Recovered Cases</td>
 				<td class="attr-rs">recovered_case</td>
 				<td class="clvalue"><?php echo $post_data[0]->recovered_case;?></td>
 			</tr>
@@ -222,16 +199,6 @@ function corona_ilu_template(){
 				<td>Death cases</td>
 				<td class="attr-rs">death</td>
 				<td class="clvalue"><?php echo $post_data[0]->death;?></td>
-			</tr>
-			<tr>
-				<td>Migrated COVID-19 Patient</td>
-				<td class="attr-rs">migrated</td>
-				<td class="clvalue"><?php echo $post_data[0]->migrated;?></td>
-			</tr>
-			<tr>
-				<td>Total Case</td>
-				<td class="attr-rs">total_case</td>
-				<td class="clvalue"><?php echo $post_data[0]->total_case;?></td>
 			</tr>
 		</table>
 	</div>
