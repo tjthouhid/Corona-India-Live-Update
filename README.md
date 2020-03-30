@@ -1,6 +1,6 @@
 # Corona India Live Update
 
-This Plugin get live data from https://www.covid19india.org/ and update to your wordpress Database in every 15 minute.
+This Plugin get live data from https://www.mohfw.gov.in/ and update to your wordpress Database in every 15 minute.
 
 You can then use Shortcode to See the live update on your website.
 
