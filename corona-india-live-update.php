@@ -3,7 +3,7 @@
 Plugin Name: Corona India Live Update
 Plugin URI: https://github.com/tjthouhid/Corona-India-Live-Update/
 Description: This Plugin get live data from https://www.mohfw.gov.in/ and update. 
-Version: 1.0.2 
+Version: 1.0.3 
 Author: Tj Thouhid 
 Author URI: https://tjthouhid.me/
 License: GPLv2 or later 
