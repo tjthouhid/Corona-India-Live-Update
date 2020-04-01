@@ -26,9 +26,9 @@ function corona_ilu_install() {
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		last_data int(100) NOT NULL,
 		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		passengers_screened_at_airport varchar(100) DEFAULT '' NOT NULL,
+		#passengers_screened_at_airport varchar(100) DEFAULT '' NOT NULL,
 		#passengers_screened_at_airport_info text NOT NULL,
-		confirmed_case varchar(100) DEFAULT '' NOT NULL,
+		active_case varchar(100) DEFAULT '' NOT NULL,
 		#confirmed_case_info text NOT NULL,
 		recovered_case varchar(100) DEFAULT '' NOT NULL,
 		#recovered_case_info text NOT NULL,
@@ -82,9 +82,9 @@ function corona_ilu_install_data() {
 		array( 
 			'time' => current_time( 'mysql' ), 
 			'last_data' => '101', 
-			'passengers_screened_at_airport' => '0', 
+			//'passengers_screened_at_airport' => '0', 
 			//'passengers_screened_at_airport_info' => '0', 
-			'confirmed_case' => '0', 
+			'active_case' => '0', 
 			//'confirmed_case_info' => '0', 
 			'recovered_case' => '0', 
 			//'recovered_case_info' => '0', 
@@ -111,21 +111,36 @@ function update_corona_ilu_info() {
 
 	//preg_match_all( "@<h2 class=\"case\">(.*)</h2>@siU", $original_file, $case );
 	//preg_match_all( "@<span class=\"info\">(.*)</span>@siU", $original_file, $case_info );	
+	$dom = new DOMDocument;
 
-	preg_match_all( "@<span class=\"icount\">(.*)</span>@siU", $original_file, $case );
-	preg_match_all( "@<div class=\"info_label\">(.*)</div>@siU", $original_file, $case_info );
+	preg_match_all( "@<li class=\"bg-blue\">(.*)</li>@siU", $original_file, $dealer_price );
+	$dom->loadHTML($dealer_price[1][0]);
+	$active = $dom->getElementsByTagName('strong')->item(0);
+
+	preg_match_all( "@<li class=\"bg-green\">(.*)</li>@siU", $original_file, $dealer_price );
+	$dom->loadHTML($dealer_price[1][0]);
+	$cured = $dom->getElementsByTagName('strong')->item(0);
+	
+	preg_match_all( "@<li class=\"bg-red\">(.*)</li>@siU", $original_file, $dealer_price );
+	$dom->loadHTML($dealer_price[1][0]);
+	$death = $dom->getElementsByTagName('strong')->item(0);
+	
+	preg_match_all( "@<li class=\"bg-orange\">(.*)</li>@siU", $original_file, $dealer_price );
+	$dom->loadHTML($dealer_price[1][0]);
+	$migrated = $dom->getElementsByTagName('strong')->item(0);
+	
 	$data = array(
 		'time' => current_time( 'mysql' ),
-		'passengers_screened_at_airport' => $case[1][0], 
+		//'passengers_screened_at_airport' => $case[1][0], 
 		//'passengers_screened_at_airport_info' => '0',  
-		'confirmed_case' => $case[1][1], 
+		'active_case' => $active->nodeValue, 
 		//'confirmed_case_info' => $case_info[1][0], 
-		'recovered_case' => $case[1][2], 
+		'recovered_case' => $cured->nodeValue, 
 		//'recovered_case_info' => $case_info[1][3], 
-		'death' => $case[1][3], 
-		'migrated' => $case[1][4], 
+		'death' => $death->nodeValue, 
+		'migrated' => $migrated->nodeValue, 
 		//'death_info' => $case_info[1][4],
-		'total_case' => ($case[1][1]+$case[1][2]+$case[1][3]+$case[1][4]), 
+		'total_case' => ($active->nodeValue+$cured->nodeValue+$death->nodeValue+$migrated->nodeValue), 
 		//'migrated_info' => '0',
 	);
 
@@ -203,15 +218,11 @@ function corona_ilu_template(){
 				<th>attribute</th>
 				<th>Value</th>
 			</tr>
-			<tr>
-				<td>Passengers screened at airport</td>
-				<td class="attr-rs">passengers_screened_at_airport</td>
-				<td class="clvalue"><?php echo $post_data[0]->passengers_screened_at_airport;?></td>
-			</tr>
+
 			<tr>
 				<td>Active COVID 2019 case</td>
-				<td class="attr-rs">confirmed_case</td>
-				<td class="clvalue"><?php echo $post_data[0]->confirmed_case;?></td>
+				<td class="attr-rs">active_case</td>
+				<td class="clvalue"><?php echo $post_data[0]->active_case;?></td>
 			</tr>
 			<tr>
 				<td>Cured/discharged cases</td>
